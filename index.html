@@ -61,6 +61,20 @@
         animation: heartbeat 1s infinite;
     }
 
+    #playMusic {
+        display: none;
+        background: white;
+        color: #e91e63;
+        font-weight: bold;
+    }
+
+    #songLink {
+        display: none;
+        color: white;
+        margin-top: 16px;
+        font-size: 18px;
+    }
+
     /* Floating hearts */
     .floating-heart {
         position: absolute;
@@ -98,27 +112,46 @@
 
 <body>
 
-<h1>Will you be My Valentine? ❤️</h1>
+<div id="mainScreen">
+    <h1>Will you be My Valentine? ❤️</h1>
 
-<button id="yes" class="btn">Yes 💖</button>
-<button id="no" class="btn">No 😢</button>
+    <button id="yes" class="btn">Yes 💖</button>
+    <button id="no" class="btn">No 😢</button>
+</div>
 
 <div id="loveScreen">
     <div class="heart">❤️</div>
     <h1>I Love You Miss Sejal💕</h1>
     <h1>From Mr. Hulk</h1>
+    <button id="playMusic" class="btn">Play Song</button>
+    <a id="songLink" href="song.mp3" target="_blank">Open Song</a>
 </div>
 
 <!-- Background Music -->
-<audio id="music" loop>
-    <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3" type="audio/mpeg">
+<audio id="music" loop preload="auto" playsinline controls>
+    <source src="song.mp3" type="audio/mpeg">
 </audio>
 
 <script>
     const noBtn = document.getElementById("no");
     const yesBtn = document.getElementById("yes");
+    const mainScreen = document.getElementById("mainScreen");
     const loveScreen = document.getElementById("loveScreen");
+    const playMusicBtn = document.getElementById("playMusic");
+    const songLink = document.getElementById("songLink");
     const music = document.getElementById("music");
+
+    music.volume = 1;
+    music.muted = false;
+
+    async function startMusic() {
+        try {
+            await music.play();
+            playMusicBtn.style.display = "none";
+        } catch (error) {
+            playMusicBtn.style.display = "inline-block";
+        }
+    }
 
     // Move NO button
     noBtn.addEventListener("mouseover", () => {
@@ -130,10 +163,10 @@
 
     // YES button click
     yesBtn.addEventListener("click", () => {
-        document.body.innerHTML = "";
-        document.body.appendChild(loveScreen);
+        mainScreen.style.display = "none";
         loveScreen.style.display = "flex";
-        music.play();
+        songLink.style.display = "inline-block";
+        startMusic();
 
         // Create floating hearts
         setInterval(() => {
@@ -150,10 +183,7 @@
         }, 300);
     });
 
-    // Autoplay fix (user interaction required)
-    document.body.addEventListener("click", () => {
-        music.play();
-    }, { once: true });
+    playMusicBtn.addEventListener("click", startMusic);
 
 </script>
 
